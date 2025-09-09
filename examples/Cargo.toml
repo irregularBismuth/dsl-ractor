@@ -7,3 +7,4 @@ edition = "2024"
 ractor = { version = "0.15.8", features = ["async-trait"] }
 tokio = { version = "1.47.1", features = ["full"] }
 dsl-ractor= {path=".."}
+anyhow = "1.0.99"

@@ -2,6 +2,11 @@
 name = "dsl-ractor"
 version = "0.1.0"
 edition = "2024"
+description = "Reduce boilerplate when working with the Ractor actor framework"
+license = "MIT OR Apache-2.0"
+keywords=["actor","ractor","async"]
+repository="https://github.com/irregularBismuth/dsl-ractor"
+homepage="https://github.com/irregularBismuth/dsl-ractor"
 
 [lib]
 proc-macro=true
