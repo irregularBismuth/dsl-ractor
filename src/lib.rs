@@ -39,6 +39,22 @@ pub fn actor(attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 
 #[proc_macro]
+pub fn actor_pre_start(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let body = parse_block_or_expr!(input);
+    quote::quote! {
+        pub async fn on_start(
+            &self,
+            myself: ractor::ActorRef<<Self as ractor::Actor>::Msg>,
+            args: <Self as ractor::Actor>::Arguments,
+        ) -> ::core::result::Result<(<Self as ractor::Actor>::State), ractor::ActorProcessingErr> {
+            let this = self;
+            #body
+        }
+    }
+    .into()
+}
+
+#[proc_macro]
 pub fn actor_handle(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let body = parse_block_or_expr!(input);
     quote::quote! {
