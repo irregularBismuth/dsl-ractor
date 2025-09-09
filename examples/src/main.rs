@@ -23,8 +23,6 @@ impl Pinger {
                 println!("Sending [Pong] {}", state);
                 if *state == 0 {
                     ractor::cast!(myself, Msg::Exit).unwrap();
-                    myself.stop(None);
-                    return Ok(());
                 }
 
                 ractor::cast!(myself, Msg::Ping).unwrap();
