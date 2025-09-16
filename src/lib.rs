@@ -11,6 +11,8 @@ use proc_macro2::TokenStream as TokenStream2;
 use syn::{parse_macro_input, spanned::Spanned, DeriveInput};
 use validate::args::validate_actor_args;
 
+/// Parses input as either a `Block` or an `Expr`.
+/// Falls back to wrapping the `Expr` in a block if no block is found.
 macro_rules! parse_block_or_expr {
     ($input:expr) => {
         if let Ok(block) = syn::parse::<syn::Block>($input.clone()) {
@@ -22,6 +24,9 @@ macro_rules! parse_block_or_expr {
     };
 }
 
+/// Attribute macro to define an `Actor`.
+/// Parses and validates arguments, then expands into the actor implementation.
+/// Emits a compile error on invalid input.
 #[proc_macro_attribute]
 pub fn actor(attr: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as DeriveInput);
@@ -38,6 +43,8 @@ pub fn actor(attr: TokenStream, item: TokenStream) -> TokenStream {
     }
 }
 
+/// Procedural macro to define the actor’s `on_start` handler.
+/// Expands the given block or expression into the async `on_start` method.
 #[proc_macro]
 pub fn actor_pre_start(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let body = parse_block_or_expr!(input);
@@ -54,6 +61,8 @@ pub fn actor_pre_start(input: proc_macro::TokenStream) -> proc_macro::TokenStrea
     .into()
 }
 
+/// Procedural macro to define the actor’s `handle_msg` handler.
+/// Expands the given block or expression into the async `handle_msg` method.
 #[proc_macro]
 pub fn actor_handle(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let body = parse_block_or_expr!(input);
