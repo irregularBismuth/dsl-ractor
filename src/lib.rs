@@ -43,39 +43,66 @@ pub fn actor(attr: TokenStream, item: TokenStream) -> TokenStream {
     }
 }
 
-/// Procedural macro to define the actor’s `on_start` handler.
+/// Procedural macro to define the actor's `on_start` handler.
 /// Expands the given block or expression into the async `on_start` method.
+#[allow(unexpected_cfgs)]
 #[proc_macro]
 pub fn actor_pre_start(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let body = parse_block_or_expr!(input);
     quote::quote! {
+        #[allow(unexpected_cfgs)]
+        #[cfg(feature="async-trait")]
         pub async fn on_start(
             &self,
             myself: ractor::ActorRef<<Self as ractor::Actor>::Msg>,
             args: <Self as ractor::Actor>::Arguments,
         ) -> ::core::result::Result<(<Self as ractor::Actor>::State), ractor::ActorProcessingErr> {
-            let this = self;
             #body
         }
-    }
-    .into()
+
+        #[allow(unexpected_cfgs)]
+        #[cfg(not(feature="async-trait"))]
+        pub fn on_start(
+            &self,
+            myself: ractor::ActorRef<<Self as ractor::Actor>::Msg>,
+            args: <Self as ractor::Actor>::Arguments,
+        ) -> impl ::core::future::Future<Output=::core::result::Result<(<Self as ractor::Actor>::State), ractor::ActorProcessingErr>> + Send {
+            async move {
+                #body
+            }
+        }
+    }.into()
 }
 
-/// Procedural macro to define the actor’s `handle_msg` handler.
+/// Procedural macro to define the actor's `handle_msg` handler.
 /// Expands the given block or expression into the async `handle_msg` method.
+#[allow(unexpected_cfgs)]
 #[proc_macro]
 pub fn actor_handle(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let body = parse_block_or_expr!(input);
     quote::quote! {
+        #[allow(unexpected_cfgs)]
+        #[cfg(feature="async-trait")]
         pub async fn handle_msg(
             &self,
             myself: ractor::ActorRef<<Self as ractor::Actor>::Msg>,
             msg: <Self as ractor::Actor>::Msg,
             state: &mut <Self as ractor::Actor>::State,
         ) -> ::core::result::Result<(), ractor::ActorProcessingErr> {
-            let this = self;
             #body
         }
-    }
-    .into()
+
+        #[allow(unexpected_cfgs)]
+        #[cfg(not(feature="async-trait"))]
+        pub fn handle_msg(
+            &self,
+            myself: ractor::ActorRef<<Self as ractor::Actor>::Msg>,
+            msg: <Self as ractor::Actor>::Msg,
+            state: &mut <Self as ractor::Actor>::State,
+        ) -> impl ::core::future::Future<Output=::core::result::Result<(), ractor::ActorProcessingErr>> + Send {
+            async move {
+                #body
+            }
+        }
+    }.into()
 }

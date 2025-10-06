@@ -1,6 +1,6 @@
 use anyhow::Result;
 use dsl_ractor::actor;
-use ractor::{cast, Actor, ActorRef};
+use ractor::{Actor, cast};
 
 #[derive(Debug, Clone)]
 enum CounterMsg {

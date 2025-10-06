@@ -3,8 +3,11 @@ name = "basic-actor"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+async-trait = ["dsl-ractor/async-trait", "ractor/async-trait"]
+
 [dependencies]
-ractor = { version = "0.15.8", features = ["async-trait"] }
+ractor = { version = "0.15.8", features = ["tokio_runtime"] }
 tokio = { version = "1.47.1", features = ["full"] }
 dsl-ractor= {path=".."}
 anyhow = "1.0.99"

@@ -1,5 +1,5 @@
 use crate::ast::{args::ActorArgsRaw, args::ValidatedActorArgs};
-use syn::{parse_quote, Error, Result, Type};
+use syn::{Error, Result, Type, parse_quote};
 
 fn require_field<T>(field: Option<T>, at: proc_macro2::Span, msg: &str) -> Result<T> {
     field.ok_or_else(|| Error::new(at, msg))

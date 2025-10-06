@@ -13,7 +13,9 @@ pub(crate) fn expand(input: &DeriveInput, v: &ValidatedActorArgs) -> TokenStream
     quote! {
         #input
 
-        #[ractor::async_trait]
+        #[allow(unexpected_cfgs)]
+        #[cfg(feature="async-trait")]
+        #[::ractor::async_trait]
         impl #impl_generics ::ractor::Actor for #name #ty_generics #where_clause {
             type Msg = #msg;
             type State = #state;
@@ -24,7 +26,7 @@ pub(crate) fn expand(input: &DeriveInput, v: &ValidatedActorArgs) -> TokenStream
                 myself: ::ractor::ActorRef<Self::Msg>,
                 args: Self::Arguments
             ) -> ::core::result::Result<Self::State, ::ractor::ActorProcessingErr> {
-                self.on_start(myself,args).await
+                self.on_start(myself, args).await
             }
 
             async fn handle(
@@ -34,6 +36,31 @@ pub(crate) fn expand(input: &DeriveInput, v: &ValidatedActorArgs) -> TokenStream
                 state: &mut Self::State
             ) -> ::core::result::Result<(), ::ractor::ActorProcessingErr> {
                 self.handle_msg(myself, msg, state).await
+            }
+        }
+
+        #[allow(unexpected_cfgs)]
+        #[cfg(not(feature = "async-trait"))]
+        impl #impl_generics ::ractor::Actor for #name #ty_generics #where_clause {
+            type Msg = #msg;
+            type State = #state;
+            type Arguments = #args_ty;
+
+            fn pre_start(
+                &self,
+                myself: ::ractor::ActorRef<Self::Msg>,
+                args: Self::Arguments
+            ) -> impl ::core::future::Future<Output=::core::result::Result<Self::State, ::ractor::ActorProcessingErr>> + Send {
+                self.on_start(myself, args)
+            }
+
+            fn handle(
+                &self,
+                myself: ::ractor::ActorRef<Self::Msg>,
+                msg: Self::Msg,
+                state: &mut Self::State
+            ) -> impl ::core::future::Future<Output = ::core::result::Result<(), ::ractor::ActorProcessingErr>> + Send {
+                self.handle_msg(myself, msg, state)
             }
         }
     }
