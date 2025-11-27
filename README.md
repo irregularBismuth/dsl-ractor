@@ -10,6 +10,7 @@ and wiring `handle`. This crate generates it so you only write the logic that ma
 - `#[actor]` attribute to auto-generate `ractor::Actor` implementations
 - `actor_pre_start!` for pre_start method
 - `actor_handle!` for handle method
+- `args` defaults to `()` if you omit it in the attribute
 
 ## Example
 ```rust

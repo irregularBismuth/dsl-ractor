@@ -1,3 +1,10 @@
+# Changelog 
+
+## 0.1.0
+
+* Clean up and fix warnings and fix expansion module
+* Add documentation
+
 ## 0.2.0
 
 ### Breaking Changes
@@ -6,4 +13,3 @@
 ### Usage
 - **Default**: `dsl-ractor = "0.2.0"` (native async)
 - **Compatibility**: `dsl-ractor = { version = "0.2.0", features = ["async-trait"] }`
-

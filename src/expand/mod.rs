@@ -1,2 +1,3 @@
-#[allow(clippy::module_inception)]
-pub mod expand;
+mod expand;
+
+pub(crate) use expand::expand;

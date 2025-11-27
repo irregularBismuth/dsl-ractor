@@ -1,6 +1,6 @@
 [package]
 name = "dsl-ractor"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 description = "Reduce boilerplate when working with the Ractor actor framework"
 license = "MIT OR Apache-2.0"
@@ -19,4 +19,3 @@ syn = { version = "2.0.106", features = ["full"] }
 [features]
 default = []
 async-trait = []
-
